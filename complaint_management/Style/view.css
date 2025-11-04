@@ -1,0 +1,187 @@
+/* Sidebar */
+.dashboard-container {
+    display: flex;
+    min-height: 100vh;
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+}
+
+.sidebar {
+    width: 220px;
+    background-color: #8B0000; /* Crimson */
+    color: #fff;
+    padding: 20px;
+    flex-shrink: 0;
+}
+
+.sidebar h2 {
+    text-align: center;
+    font-size: 1.8em;
+    margin-bottom: 30px;
+}
+
+.sidebar ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.sidebar ul li {
+    margin-bottom: 20px;
+}
+
+.sidebar ul li a {
+    color: #fff;
+    text-decoration: none;
+    display: block;
+    padding: 10px 15px;
+    border-radius: 5px;
+    transition: background 0.3s;
+}
+
+.sidebar ul li a.active,
+.sidebar ul li a:hover {
+    background-color: #b22222; /* Darker crimson on hover */
+}
+
+/* Main content */
+.main-content {
+    flex: 1;
+    padding: 30px;
+}
+
+.main-content h1 {
+    color: #8B0000;
+    margin-bottom: 20px;
+}
+
+/* Tables and sections */
+.table-section {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    margin-bottom: 30px;
+}
+
+.table-section p {
+    margin: 10px 0;
+}
+
+.table-section hr {
+    border: 0;
+    height: 1px;
+    background: #ddd;
+    margin: 15px 0;
+}
+
+/* Buttons */
+.view-btn, input[type="submit"] {
+    background-color: #8B0000;
+    color: #fff;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.view-btn:hover, input[type="submit"]:hover {
+    background-color: #b22222;
+}
+
+/* Textareas */
+textarea {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    resize: vertical;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .dashboard-container {
+        flex-direction: column;
+    }
+    .sidebar {
+        width: 100%;
+        display: flex;
+        justify-content: space-around;
+    }
+    .main-content {
+        padding: 20px;
+    }
+}
+
+/* Attachment image styling */
+.attachment-img {
+    max-width: 1200px;  /* make it bigger */
+    width: 100%;       /* responsive */
+    height: auto;
+    border-radius: 8px;
+    margin: 15px 0;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    transition: transform 0.3s;
+}
+
+/* Zoom effect on hover */
+.attachment-img:hover {
+    transform: scale(1.05);
+    cursor: pointer;
+}
+
+
+/* Highlighted description box */
+.description-box {
+    background-color: #fff3f3; /* very light crimson/pinkish tint */
+    border-left: 4px solid #8B0000; /* crimson border on left */
+    padding: 15px 20px;
+    border-radius: 8px;
+    margin: 15px 0;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    font-size: 1.05em;
+    line-height: 1.5em;
+}
+
+/* Top Back Button */
+.top-buttons {
+    margin-bottom: 20px;
+}
+
+.back-btn {
+    display: inline-block;
+    background-color: #8B0000; /* Crimson */
+    color: #fff;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    transition: background 0.3s, transform 0.2s;
+}
+
+.back-btn:hover {
+    background-color: #b22222; /* Darker crimson */
+    transform: scale(1.05);
+}
+
+.delete-btn {
+    background-color: #ff4d4d;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.delete-btn:hover {
+    background-color: #ff1a1a;
+}
+.success-box {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+    padding: 10px 15px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+}

@@ -1,0 +1,192 @@
+/* ===== Crimson College Admin Dashboard ===== */
+
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #f7f7f7;
+    color: #222;
+}
+
+/* === Layout === */
+.dashboard-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* === Sidebar === */
+.sidebar {
+    background-color: #8C1C13;
+    color: #fff;
+    width: 240px;
+    padding: 2rem 1rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar h2 {
+    text-align: center;
+    font-size: 1.3rem;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid rgba(255,255,255,0.3);
+    padding-bottom: 1rem;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar ul li {
+    margin: 1rem 0;
+}
+
+.sidebar ul li a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 500;
+    display: block;
+    padding: 0.6rem 1rem;
+    border-radius: 6px;
+    transition: background-color 0.3s;
+}
+
+.sidebar ul li a:hover,
+.sidebar ul li a.active {
+    background-color: #a62d1e;
+}
+
+.sidebar .logout {
+    margin-top: auto;
+    background-color: #a62d1e;
+    text-align: center;
+    padding: 0.8rem;
+    border-radius: 6px;
+}
+
+/* === Main Content === */
+.main-content {
+    flex: 1;
+    padding: 2rem;
+}
+
+.topbar {
+    background-color: #fff;
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.topbar h1 {
+    color: #8C1C13;
+    margin: 0;
+}
+
+/* === Filter Section === */
+.filter-section {
+    background-color: #fff;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    margin-bottom: 2rem;
+}
+
+.filter-section form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+}
+
+.filter-section label {
+    font-weight: 600;
+}
+
+.filter-section select, 
+.filter-section button {
+    padding: 0.5rem 0.8rem;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 0.95rem;
+}
+
+.filter-section button {
+    background-color: #8C1C13;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.filter-section button:hover {
+    background-color: #a62d1e;
+}
+
+/* === Table Section === */
+.table-section {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.table-section h2 {
+    color: #8C1C13;
+    margin-bottom: 1rem;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+thead {
+    background-color: #8C1C13;
+    color: #fff;
+}
+
+th, td {
+    padding: 0.8rem;
+    border-bottom: 1px solid #ddd;
+}
+
+tr:hover {
+    background-color: #f9f9f9;
+}
+
+.status {
+    font-weight: bold;
+}
+
+.view-btn {
+    color: #8C1C13;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.view-btn:hover {
+    text-decoration: underline;
+}
+
+.no-data {
+    text-align: center;
+    color: #555;
+    padding: 1rem;
+}
+
+
+.clear-btn {
+    display: inline-block;
+    background-color: #555;
+    color: #fff;
+    text-decoration: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    transition: background 0.3s;
+}
+
+.clear-btn:hover {
+    background-color: #333;
+}
