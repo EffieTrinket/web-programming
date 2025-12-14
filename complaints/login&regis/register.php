@@ -86,8 +86,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $mail->isSMTP();
             $mail->Host = 'smtp.gmail.com'; // your SMTP server
             $mail->SMTPAuth = true;
-            $mail->Username = 'crimsoncolleges@gmail.com';
-            $mail->Password = 'fiqfzycsqbqnbjoo';
+            $mail->Username = '';
+            $mail->Password = '';
             $mail->SMTPSecure = 'tls';
             $mail->Port = 587;
 
@@ -367,3 +367,4 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </div>
 </body>
 </html>
+
