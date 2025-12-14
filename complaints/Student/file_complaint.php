@@ -46,8 +46,8 @@ function sendEmail($to, $subject, $body, $replyTo = null) {
         $mail->isSMTP();
         $mail->Host = 'smtp.gmail.com'; // Gmail SMTP server
         $mail->SMTPAuth = true;
-        $mail->Username = 'crimsoncolleges@gmail.com'; 
-        $mail->Password = 'fiqfzycsqbqnbjoo'; 
+        $mail->Username = ''; 
+        $mail->Password = ''; 
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port = 587;
         
@@ -375,4 +375,5 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </main>
 </div>
 </body>
+
 </html>
