@@ -90,8 +90,8 @@ if ($_SESSION['users']['role'] === 'admin' && $_SERVER['REQUEST_METHOD'] === 'PO
             $mail->isSMTP();
             $mail->Host       = 'smtp.gmail.com';
             $mail->SMTPAuth   = true;
-            $mail->Username   = 'crimsoncolleges@gmail.com'; // Replace with your Gmail
-            $mail->Password   = 'fiqfzycsqbqnbjoo';   // Replace with App Password
+            $mail->Username   = ''; // Replace with your Gmail
+            $mail->Password   = '';   // Replace with App Password
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
             $mail->Port       = 587;
 
@@ -259,3 +259,4 @@ $history = $usersObj->getComplaintHistory($complaint_id);
 
 </body>
 </html>
+
