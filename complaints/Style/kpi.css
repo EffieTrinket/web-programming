@@ -1,0 +1,366 @@
+/* ===== Crimson College Admin Dashboard ===== */
+
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #f7f7f7;
+    color: #222;
+}
+
+/* === Layout === */
+.dashboard-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* === Sidebar === */
+.sidebar {
+    background-color: #8C1C13;
+    color: #fff;
+    width: 240px;
+    padding: 2rem 1rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar h2 {
+    text-align: center;
+    font-size: 1.3rem;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid rgba(255,255,255,0.3);
+    padding-bottom: 1rem;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar ul li {
+    margin: 1rem 0;
+}
+
+.sidebar ul li a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 500;
+    display: block;
+    padding: 0.6rem 1rem;
+    border-radius: 6px;
+    transition: background-color 0.3s;
+}
+
+.sidebar ul li a:hover,
+.sidebar ul li a.active {
+    background-color: #a62d1e;
+}
+
+.sidebar .logout {
+    margin-top: auto;
+    background-color: #a62d1e;
+    text-align: center;
+    padding: 0.8rem;
+    border-radius: 6px;
+}
+
+/* === Main Content === */
+.main-content {
+    flex: 1;
+    padding: 2rem;
+}
+
+.topbar {
+    background-color: #fff;
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.topbar h1 {
+    color: #8C1C13;
+    margin: 0;
+}
+
+/* === Filter Section === */
+.filter-section {
+    background-color: #fff;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    margin-bottom: 2rem;
+}
+
+.filter-section form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+}
+
+.filter-section label {
+    font-weight: 600;
+}
+
+.filter-section select, 
+.filter-section button {
+    padding: 0.5rem 0.8rem;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 0.95rem;
+}
+
+.filter-section button {
+    background-color: #8C1C13;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.filter-section button:hover {
+    background-color: #a62d1e;
+}
+
+/* === Table Section === */
+.table-section {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.table-section h2 {
+    color: #8C1C13;
+    margin-bottom: 1rem;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+thead {
+    background-color: #8C1C13;
+    color: #fff;
+}
+
+th, td {
+    padding: 0.8rem;
+    border-bottom: 1px solid #ddd;
+}
+
+tr:hover {
+    background-color: #f9f9f9;
+}
+
+.status {
+    font-weight: bold;
+}
+
+.view-btn {
+    color: #8C1C13;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.view-btn:hover {
+    text-decoration: underline;
+}
+
+.no-data {
+    text-align: center;
+    color: #555;
+    padding: 1rem;
+}
+
+
+.clear-btn {
+    display: inline-block;
+    background-color: #555;
+    color: #fff;
+    text-decoration: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    transition: background 0.3s;
+}
+
+.clear-btn:hover {
+    background-color: #333;
+}
+
+.kpi-number {
+    font-size: 25px;
+    font-weight: bold;
+    color: #8C1C13;
+    margin-top: 0.5rem;
+}
+
+/* Print-specific styles */
+@media print {
+    /* Hide non-printable elements */
+    .sidebar,
+    .topbar,
+    .no-print,
+    .print-button {
+        display: none !important;
+    }
+
+    /* Reset layout for print */
+    body {
+        margin: 0;
+        padding: 20px;
+        background: white;
+        color: black;
+    }
+
+    .dashboard-container {
+        display: block;
+        width: 100%;
+    }
+
+    .main-content {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+    }
+
+    /* Print header */
+    .print-header {
+        display: block !important;
+        text-align: center;
+        margin-bottom: 30px;
+        border-bottom: 2px solid #333;
+        padding-bottom: 15px;
+    }
+
+    .print-header h1 {
+        margin: 0 0 5px 0;
+        font-size: 24px;
+        color: #8B0000;
+    }
+
+    .print-header .print-date {
+        font-size: 12px;
+        color: #666;
+    }
+
+    /* Card styling for print */
+    .card {
+        page-break-inside: avoid;
+        border: 2px solid #333;
+        padding: 20px;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    .card h2 {
+        margin-top: 0;
+        font-size: 16px;
+        color: #333;
+    }
+
+    .kpi-number {
+        font-size: 30px;
+        font-weight: bold;
+        color: #8B0000;
+        margin: 10px 0;
+    }
+
+    /* Table styling for print */
+    .table-section {
+        page-break-inside: avoid;
+        margin-bottom: 30px;
+    }
+
+    .table-section h2 {
+        font-size: 18px;
+        color: #333;
+        margin-bottom: 10px;
+        border-bottom: 1px solid #333;
+        padding-bottom: 5px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+
+    table thead {
+        background-color: #f0f0f0 !important;
+    }
+
+    table th {
+        background-color: #f0f0f0;
+        color: #333;
+        font-weight: bold;
+        padding: 10px;
+        text-align: left;
+        border: 1px solid #333;
+    }
+
+    table td {
+        padding: 8px 10px;
+        border: 1px solid #666;
+        color: #000;
+    }
+
+    table tbody tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    /* Page break control */
+    .page-break {
+        page-break-after: always;
+    }
+
+    /* Print footer */
+    .print-footer {
+        display: block !important;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        text-align: center;
+        font-size: 10px;
+        color: #666;
+        padding: 10px;
+        border-top: 1px solid #ccc;
+    }
+}
+
+/* Screen-only styles */
+@media screen {
+    .print-header,
+    .print-footer {
+        display: none;
+    }
+
+    .print-button {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background-color: #8B0000;
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        z-index: 1000;
+        transition: background-color 0.3s ease;
+    }
+
+    .print-button:hover {
+        background-color: #660000;
+    }
+
+    .print-button:active {
+        transform: scale(0.98);
+    }
+}
+

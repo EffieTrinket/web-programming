@@ -1,9 +1,27 @@
 <?php
 require_once '../complaint/users.php';
+
 $registerObj = new Users();
 
 $register = [];
 $errors = [];
+
+$conn = $registerObj->conn;
+
+$department_id = isset($_POST['department']) ? intval($_POST['department']) : 0;
+$course_id = isset($_POST['course']) ? intval($_POST['course']) : 0;
+
+$departmentsStmt = $conn->query("SELECT * FROM departments ORDER BY department ASC");
+$departments = $departmentsStmt->fetchAll(PDO::FETCH_ASSOC);
+
+$courses = [];
+if ($department_id > 0) {
+    $coursesStmt = $conn->prepare("SELECT * FROM courses WHERE department_id = ?");
+    $coursesStmt->execute([$department_id]);
+    $courses = $coursesStmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
@@ -13,8 +31,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $register['email'] = trim(htmlspecialchars($_POST['email']));
     $register['password'] = trim(htmlspecialchars($_POST['password']));
     $register['role'] = 'student';
-    
-    $department_id = isset($_POST['department']) ? intval($_POST['department']) : 0;
 
     if (empty($register['lname'])) {
         $errors['lname'] = "Last name is required.";
@@ -40,6 +56,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $errors['password'] = "Passwords do not match.";
     }
 
+    if (empty($_POST['department']) || empty($_POST['course'])) {
+    $errors[] = "Please select both department and course.";
+    }
+
+
     if (empty($errors)) {
         $registerObj->lname = $register['lname'];
         $registerObj->fname = $register['fname'];
@@ -48,83 +69,301 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $registerObj->password = $register['password'];
         $registerObj->role = $register['role'];
         $registerObj->department_id = $department_id; 
+        $registerObj->course_id = $_POST['course'];
+
+        $token = bin2hex(random_bytes(16));
+        $registerObj->verification_token = $token; // add this property in your Users class
+        $registerObj->is_verified = 0; // default to not verified
 
         if ($registerObj->registerUser()) {
-            header("Location: login.php");
-            exit();
-        } else {
-            echo "Registration failed. Please try again.";
+        
+
+        require '../complaint/PHPMailer.php';
+        require '../complaint/Exception.php';  
+        require '../complaint/SMTP.php';   
+        $mail = new PHPMailer\PHPMailer\PHPMailer();
+        try {
+            $mail->isSMTP();
+            $mail->Host = 'smtp.gmail.com'; // your SMTP server
+            $mail->SMTPAuth = true;
+            $mail->Username = 'crimsoncolleges@gmail.com';
+            $mail->Password = 'fiqfzycsqbqnbjoo';
+            $mail->SMTPSecure = 'tls';
+            $mail->Port = 587;
+
+            $mail->setFrom('you@example.com', 'Crimson College');
+            $mail->addAddress($register['email']);
+            $mail->isHTML(true);
+            $mail->Subject = 'Verify Your Email';
+            $mail->Body = "
+                        <html>
+                        <head>
+                        <meta charset='UTF-8'>
+                        <title>Crimson College Email Verification</title>
+                        </head>
+                        <body style='font-family: Arial, sans-serif; background-color: #f7f7f7; margin:0; padding:0;'>
+                        <table align='center' width='100%' cellpadding='0' cellspacing='0' style='max-width:600px; margin:50px auto; background-color:#fff; border-radius:10px; box-shadow:0 4px 10px rgba(0,0,0,0.1);'>
+                            <tr>
+                            <td style='padding:20px; text-align:center; background-color:#8C1C13; border-top-left-radius:10px; border-top-right-radius:10px; color:#fff;'>
+                                <h2 style='margin:0;'>Crimson College</h2>
+                            </td>
+                            </tr>
+                            <tr>
+                            <td style='padding:30px; text-align:center;'>
+                                <h3 style='color:#333;'>Thank you for registering!</h3>
+                                <p style='color:#555; font-size:16px; line-height:1.5;'>Please verify your email to activate your account.</p>
+                                <a href='http://localhost/complaints/login&regis/verify.php?token=$token' 
+                                style='display:inline-block; padding:12px 25px; background-color:#8C1C13; color:#ffffff; font-weight:bold; text-decoration:none; border-radius:6px; margin-top:20px;'>
+                                Verify Email
+                                </a>
+                                <p style='color:#999; font-size:14px; margin-top:20px;'>If you did not register, please ignore this email.</p>
+                            </td>
+                            </tr>
+                            <tr>
+                            <td style='padding:15px; text-align:center; font-size:12px; color:#999;'>
+                                &copy; ".date('Y')." Crimson College. All rights reserved.
+                            </td>
+                            </tr>
+                        </table>
+                        </body>
+                        </html>
+                        ";
+
+            $mail->send();
+           echo "
+       <html>
+<head>
+    <title>Registration Successful</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            background-color: #f7f7f7; 
+            margin: 0; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh;
         }
+        .container { 
+            background-color: #ffffff; /* Light neutral background */
+            color: #333; 
+            padding: 40px 30px; 
+            border-radius: 12px; 
+            text-align: center; 
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2); 
+            width: 90%; 
+            max-width: 500px;
+        }
+        .container h1 { 
+            font-size: 28px; 
+            margin-bottom: 20px;
+            color: #8C1C13; /* Crimson heading for WMSU accent */
+        }
+        .container p { 
+            font-size: 18px; 
+            line-height: 1.5; 
+            margin-bottom: 30px;
+        }
+        .container a { 
+            display: inline-block; 
+            background-color: #8C1C13; /* Crimson button */
+            color: #ffffff; /* White text */
+            text-decoration: none; 
+            font-weight: bold; 
+            padding: 12px 25px; 
+            border-radius: 8px; 
+            transition: 0.3s;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .container a:hover { 
+            background-color: #a21f19; /* Slightly lighter crimson on hover */
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+    <div class='container'>
+        <h1>Registration Successful!</h1>
+        <p>Please check your email to verify your account.</p>
+        <a href='login.php'>Go to Login</a>
+    </div>
+</body>
+</html>
+
+        ";
+
+        } catch (Exception $e) {
+            echo "
+        <html>
+<head>
+    <title>Email Error</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            background-color: #f7f7f7; 
+            margin: 0; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh;
+        }
+        .container { 
+            background-color: #ffffff; /* Light neutral background */
+            color: #333; 
+            padding: 40px 30px; 
+            border-radius: 12px; 
+            text-align: center; 
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2); 
+            width: 90%; 
+            max-width: 500px;
+        }
+        .container h1 { 
+            font-size: 28px; 
+            margin-bottom: 20px;
+            color: #8C1C13; /* Crimson heading */
+        }
+        .container p { 
+            font-size: 18px; 
+            line-height: 1.5; 
+            margin-bottom: 30px;
+        }
+        .container a { 
+            display: inline-block; 
+            background-color: #8C1C13; /* Crimson button */
+            color: #ffffff; /* White text */
+            text-decoration: none; 
+            font-weight: bold; 
+            padding: 12px 25px; 
+            border-radius: 8px; 
+            border: 2px solid #ffffff;
+            transition: 0.3s;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .container a:hover { 
+            background-color: #a21f19; /* Slightly lighter crimson on hover */
+            color: #ffffff; 
+        }
+    </style>
+</head>
+<body>
+    <div class='container'>
+        <h1>Registration Successful!</h1>
+        <p>But the email could not be sent. Mailer Error: {$mail->ErrorInfo}</p>
+        <a href='login.php'>Go to Login</a>
+    </div>
+</body>
+</html>
+
+
+        ";
+        }
+
+        exit();
+    } else {
+        echo "
+    <html>
+    <head>
+        <title>Registration Failed</title>
+        <style>
+            body { font-family: 'Segoe UI', sans-serif; background-color:#f7f7f7; margin:0; display:flex; justify-content:center; align-items:center; height:100vh;}
+            .container { background-color:#8C1C13; color:#fff; padding:40px 30px; border-radius:12px; text-align:center; box-shadow:0 8px 20px rgba(0,0,0,0.2); width:90%; max-width:500px;}
+            .container h1 { font-size:28px; margin-bottom:20px;}
+            .container p { font-size:18px; line-height:1.5; margin-bottom:30px;}
+            .container a { display:inline-block; background-color:#FFD700; color:#8C1C13; text-decoration:none; font-weight:bold; padding:12px 25px; border-radius:8px; transition:0.3s;}
+            .container a:hover { background-color:#e6c200;}
+        </style>
+    </head>
+    <body>
+        <div class='container'>
+            <h1>Registration Failed</h1>
+            <p>Please try again.</p>
+            <a href='register.php'>Back to Register</a>
+        </div>
+    </body>
+    </html>
+    ";
     }
+}
 }
 ?>
 
-
-?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register</title>
+    <title>Crimson | Register</title>
+    <link rel="stylesheet" href="../Style/reg_des.css">
 </head>
 <body>
-    <div class="container" id="register-form">
-    <form action="" method="POST">
-        <h2>Register</h2>
-        <label for="lname">Last Name:</label>
-        <input type="text" id="lname" name="lname" value="<?=$register['lname'] ?? ""?>">
-        <p><?= $errors["lname"] ?? ""?></p>
+    <div class="register-container">
+        <form action="" method="POST" class="register-form">
+            <h2>Student Registration</h2>
 
-        <label for="fname">First Name:</label>
-        <input type="text" id="fname" name="fname"  value="<?=$register['fname'] ?? ""?>">
-        <p><?= $errors["fname"] ?? ""?></p>
-        
-        <label for="mname">Middle Name:</label>
-        <input type="text" id="mname" name="mname" > <br><br>
+            <div class="form-group">
+                <label for="fname">First Name</label>
+                <input type="text" id="fname" name="fname" value="<?=$register['fname'] ?? ''?>">
+                <p class="error"><?= $errors["fname"] ?? '' ?></p>
+            </div>
 
-       <select name="department" id="department" required>
-            <option value="">-- Select College Department --</option>
-            <option value="1" <?= (isset($department_id) && $department_id == 1) ? 'selected' : '' ?>>College of Engineering</option>
-            <option value="2" <?= (isset($department_id) && $department_id == 2) ? 'selected' : '' ?>>College of Sports Science and Physical Education</option>
-            <option value="3" <?= (isset($department_id) && $department_id == 3) ? 'selected' : '' ?>>External Studies Unit</option>
-            <option value="4" <?= (isset($department_id) && $department_id == 4) ? 'selected' : '' ?>>College of Computing Studies</option>
-            <option value="5" <?= (isset($department_id) && $department_id == 5) ? 'selected' : '' ?>>College of Nursing</option>
-            <option value="6" <?= (isset($department_id) && $department_id == 6) ? 'selected' : '' ?>>College of Criminal Justice Education</option>
-            <option value="7" <?= (isset($department_id) && $department_id == 7) ? 'selected' : '' ?>>College of Science and Mathematics</option>
-            <option value="8" <?= (isset($department_id) && $department_id == 8) ? 'selected' : '' ?>>College of Liberal Arts</option>
-            <option value="9" <?= (isset($department_id) && $department_id == 9) ? 'selected' : '' ?>>College of Agriculture</option>
-            <option value="10" <?= (isset($department_id) && $department_id == 10) ? 'selected' : '' ?>>College of Home Economics</option>
-            <option value="11" <?= (isset($department_id) && $department_id == 11) ? 'selected' : '' ?>>College of Teacher Education</option>
-            <option value="12" <?= (isset($department_id) && $department_id == 12) ? 'selected' : '' ?>>College of Law</option>
-            <option value="13" <?= (isset($department_id) && $department_id == 13) ? 'selected' : '' ?>>College of Architecture</option>
-            <option value="14" <?= (isset($department_id) && $department_id == 14) ? 'selected' : '' ?>>College of Public Administration</option>
-            <option value="15" <?= (isset($department_id) && $department_id == 15) ? 'selected' : '' ?>>College of Social Work and Community Development</option>
-            <option value="16" <?= (isset($department_id) && $department_id == 16) ? 'selected' : '' ?>>College of Forestry and Environmental Studies</option>
-            <option value="17" <?= (isset($department_id) && $department_id == 17) ? 'selected' : '' ?>>College of Asian and Islamic Studies</option>
-            <option value="18" <?= (isset($department_id) && $department_id == 18) ? 'selected' : '' ?>>College of Medicine</option>
-        </select>
-            <p><?= $errors["department"] ?? ""?></p>
+            <div class="form-group">
+                <label for="mname">Middle Name</label>
+                <input type="text" id="mname" name="mname">
+            </div>
 
+             <div class="form-group">
+                <label for="lname">Last Name</label>
+                <input type="text" id="lname" name="lname" value="<?=$register['lname'] ?? ''?>">
+                <p class="error"><?= $errors["lname"] ?? '' ?></p>
+            </div>
 
-        
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email"  value="<?=$register['email'] ?? ""?>">
-        <p><?= $errors["email"] ?? ""?></p>
-        
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password"  value="<?=$register['password'] ?? ""?>" >
-        <p><?= $errors["password"] ?? ""?></p>
+            <div class="form-group">
+                <label for="department">College Department</label>
+                <select name="department" id="department" onchange="this.form.submit()">
+                    <option value="">-- Select College Department --</option>
+                    <?php foreach ($departments as $dept): ?>
+                        <option value="<?= $dept['department_id'] ?>" <?= ($department_id == $dept['department_id']) ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($dept['department']) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+                <p class="error"><?= $errors['department'] ?? '' ?></p>
+            </div>
 
-        <label for="password">Confirm Password:</label>
-        <input type="password" id="conpassword" name="conpassword"  value="<?=$register['conpassword'] ?? ""?>">
-        <p><?= $errors["password"] ?? ""?></p>
-        
-        <input type="submit" value="Register">
+            <div class="form-group">
+                <label for="course">Course</label>
+                <select name="course" id="course" <?= ($department_id == 0) ? 'disabled' : '' ?>>
+                    <option value="">-- Select Course --</option>
+                    <?php foreach ($courses as $course): ?>
+                        <option value="<?= $course['course_id'] ?>" <?= ($course_id == $course['course_id']) ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($course['course_name']) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+                <p class="error"><?= $errors['course'] ?? '' ?></p>
+            </div>
 
-        <p>Already have an account? <a href="login.php">Log in here</a></p>
-    </form>
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" value="<?=$register['email'] ?? ''?>">
+                <p class="error"><?= $errors["email"] ?? '' ?></p>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password">
+                <p class="error"><?= $errors["password"] ?? '' ?></p>
+            </div>
+
+            <div class="form-group">
+                <label for="conpassword">Confirm Password</label>
+                <input type="password" id="conpassword" name="conpassword">
+            </div>
+
+            <button type="submit" class="btn-register">Register</button>
+            <p class="login-link">Already have an account? <a href="login.php">Login here</a></p>
+        </form>
     </div>
 </body>
 </html>

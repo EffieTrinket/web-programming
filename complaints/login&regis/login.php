@@ -6,7 +6,7 @@ if (isset($_SESSION["users"])) {
         header('location: ../admin/admin_dashboard.php');
         exit();
     } 
-    if ($_SESSION["users"]['role'] == 'student'){
+    if ($_SESSION["users"]['role'] == 'student') {
         header('location: ../Student/student_dashboard.php');
         exit();
     }
@@ -17,8 +17,8 @@ $account = new Account();
 $error = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $account->email = trim(htmlentities($_POST['email']));
-    $account->password = trim(htmlentities($_POST['password']));
+    $account->email = trim(htmlspecialchars($_POST['email']));
+    $account->password = trim(htmlspecialchars($_POST['password']));
 
     if (empty($account->email) && empty($account->password)) {
         $error = "Please enter your email and password.";
@@ -44,32 +44,40 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $error = "Invalid email or password.";
         }
     }
+    if ($user['is_verified'] == 0) {
+    echo "Please verify your email before logging in.";
+    exit();
+    }
+
 }
 ?>
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Log In</title>
+    <title>Colleges Complaint Portal | Login</title>
+    <link rel="stylesheet" href="../Style/login_des.css">
 </head>
 <body>
 
     <div class="container" id="login-form">
-    <h2>Log In</h2>
-    <form action="" method="POST">
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" value="<?php if(isset($_POST['email'])) { echo $_POST['email']; } ?>">
+        <h2>Login</h2>
+        <form action="" method="POST">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" value="<?php if(isset($_POST['email'])) echo $_POST['email']; ?>">
 
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" value="<?php if(isset($_POST['password'])) { echo $_POST['password']; } ?>">
-        <p><?= $error ?? ""?></p>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password">
 
-        <input type="submit" value="Log In">
-    </form>
-    <p>Don't have an account? <a href="register.php">Register here</a></p>
+            <?php if(!empty($error)): ?>
+                <div class="error"><?= $error ?></div>
+            <?php endif; ?>
+
+            <input type="submit" value="Log In">
+        </form>
+        <p>Don’t have an account? <a href="register.php">Register here</a></p>
     </div>
+
 </body>
 </html>
